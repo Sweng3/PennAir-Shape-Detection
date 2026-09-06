@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def detect_shapes(frame, min_area=500, blur_ksize=(15, 15), percentile=85, safety_margin=1.3, detect_width=None):
+def detect_shapes(frame, min_area=500, blur_ksize=(15, 15), percentile=85, safety_margin=1.5, detect_width=None):
     scale = 1.0
     original_frame = frame
     if detect_width is not None and frame.shape[1] > detect_width:
