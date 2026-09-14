@@ -46,19 +46,63 @@ def detect_shapes(frame, min_area=2000, var_ksize=5, var_thresh=20, min_solidity
         cx = int(M["m10"] / M["m00"])
         cy = int(M["m01"] / M["m00"])
 
-        shapes.append({"contour": smoothed, "center": (cx, cy), "area": smoothed_area})
+        smoothed_perimeter = cv2.arcLength(smoothed, True)
+        circularity = ( # more circle -> higher value
+            4 * np.pi * smoothed_area / (smoothed_perimeter ** 2)
+            if smoothed_perimeter > 0 else 0
+        )
+ 
+        shapes.append({
+            "contour": smoothed,
+            "center": (cx, cy),
+            "area": smoothed_area,
+            "circularity": circularity,
+            "vertices": len(smoothed),
+        })
 
     return shapes
 
+def estimate_3d_positions(shapes, K, reference_radius, min_circularity=0.85):
+    if not shapes:
+        return shapes
+
+    # finding the circle
+    circle = max(shapes, key=lambda s: s.get("circularity", 0))
+    if circle.get("circularity", 0) < min_circularity:
+        return shapes
+ 
+    fx, fy = K[0][0], K[1][1]
+    cx, cy = K[0][2], K[1][2]
+ 
+    apparent_radius_px = np.sqrt(circle["area"] / np.pi)
+    focal_length_px = (fx + fy) / 2  # average the two axes' focal lengths
+    depth_z = focal_length_px * reference_radius / apparent_radius_px
+ 
+    for shape in shapes:
+        u, v = shape["center"]
+        x = (u - cx) * depth_z / fx
+        y = (v - cy) * depth_z / fy
+        shape["position_3d"] = (x, y, depth_z)
+ 
+    return shapes
+
 # draw outlines and center dots for detected shapes
-def draw_shapes(frame, shapes, outline_color=(0, 255, 0), center_color=(0, 0, 255)):
+def draw_shapes(frame, shapes, outline_color=(0, 255, 0), center_color=(0, 0, 255), show_3d=False):
     output = frame.copy()
     for shape in shapes:
         cv2.drawContours(output, [shape["contour"]], -1, outline_color, 3)
         cx, cy = shape["center"]
         cv2.circle(output, (cx, cy), 6, center_color, -1)
+        
+        position_3d = shape.get("position_3d")
+        if show_3d and position_3d is not None:
+            x, y, z = position_3d
+            label = f"({x:.1f}, {y:.1f}, {z:.1f})"
+        else:
+            label = f"({cx},{cy})"
+
         cv2.putText(
-            output, f"({cx},{cy})", (cx + 12, cy),
+            output, label, (cx + 12, cy),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1
         )
     return output
