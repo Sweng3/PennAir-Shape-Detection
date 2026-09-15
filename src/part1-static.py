@@ -1,3 +1,17 @@
+"""
+STATIC IMAGE RESULTS REPORT
+
+Approach: Shapes are detected using local pixel-to-pixel variance
+rather than color. Every shape is rendered as a smooth surface (local
+variance is near zero) as compared to the textured background (local 
+variance is high). The shapes' contours are then drawn, smoothed out, and
+filtered. 
+
+Challenges: The first working version used color, but wasn't good since 
+color distance was sensitive to gradients and lighting so making it work
+was difficult. 
+"""
+
 import cv2
 from shape_detector import detect_shapes, draw_shapes
 

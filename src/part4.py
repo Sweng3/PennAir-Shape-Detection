@@ -1,3 +1,10 @@
+"""
+BACKGROUND AGNOSTIC RESULTS REPORT
+
+Modifications: using local variance instead of color
+"""
+
+
 import cv2
 import time
 from shape_detector import detect_shapes, draw_shapes, estimate_3d_positions

@@ -1,3 +1,15 @@
+"""
+VIDEO RESULTS REPORT
+
+Peformance: Runs decently fast
+
+Adjustments: Working resolution for per-shape refinement capped, 
+avoided redudnt recomputation, switch to local-variance segmentation, 
+and cv2's VideoWriter was returning garbled frames, so it was 
+switched to ffmpeg
+
+"""
+
 import cv2
 from shape_detector import detect_shapes, draw_shapes
 from video_writer import FFmpegVideoWriter
