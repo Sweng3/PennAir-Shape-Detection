@@ -7,12 +7,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Running each part:
 Part 1: Reads "images/PennAir 2024 App Static.png", prints each detected shape's center and area, and saves it to "images/part1_output.png".
 
 ```bash
 python3 src/part1-static.py
 ```
+![Part 1 Shape Detection](images/part1_output.png)
 
 Part 2: Reads "videos/PennAir 2024 App Dynamic.mp4", processes it frame-by-frame, and writes the annotated result to "videos/part2_output.mp4". 
 
