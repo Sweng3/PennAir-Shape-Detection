@@ -12,13 +12,13 @@ Part 1: Reads "images/PennAir 2024 App Static.png", prints each detected shape's
 ```bash
 python3 src/part1-static.py
 ```
-![Part 1 Shape Detection](images/part1_output.png)
 
 Part 2: Reads "videos/PennAir 2024 App Dynamic.mp4", processes it frame-by-frame, and writes the annotated result to "videos/part2_output.mp4". 
 
 ```bash
 python3 src/part2-video.py
 ```
+
 
 Part 3: Reads "videos/PennAir 2024 App Dynamic Hard.mp4" and outputs
 it to "videos/part3_output.mp4".
